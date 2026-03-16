@@ -1,3 +1,20 @@
 spring:
   application:
     name: coffee-erp-backend
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/coffee_inventory
+    username: coffee_admin
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+    jpa:
+      hibernate:
+        ddl-auto: create
+      show-sql: true
+      properties:
+        hibernate:
+          format_sql: true
+
+    flyway:
+      enabled: false
