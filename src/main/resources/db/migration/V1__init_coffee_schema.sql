@@ -40,15 +40,15 @@ CREATE TABLE inventory_stocks (
 ALTER TABLE IF EXISTS coffee_bean_supplier
     ADD CONSTRAINT FK6p48ttw34wx04512slf3pvae9
     FOREIGN KEY (suppliers_id)
-    REFERENCES suppliers
+    REFERENCES suppliers;
 
 ALTER TABLE IF EXISTS coffee_bean_supplier
     ADD CONSTRAINT FKr3v13kpltigwe56ur1ssqstk8
     FOREIGN KEY (coffee_beans_id)
-    REFERENCES coffee_beans
+    REFERENCES coffee_beans;
 
 ALTER TABLE IF EXISTS inventory_stocks
     ADD CONSTRAINT FKaeiwpy336gcpbru0tjnju937j
     FOREIGN KEY (bean_id)
-    REFERENCES coffee_beans
+    REFERENCES coffee_beans;
 
