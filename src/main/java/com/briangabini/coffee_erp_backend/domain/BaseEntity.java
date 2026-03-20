@@ -1,9 +1,11 @@
 package com.briangabini.coffee_erp_backend.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -13,6 +15,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
+@SuperBuilder
 @MappedSuperclass
 public class BaseEntity {
 
@@ -30,4 +33,8 @@ public class BaseEntity {
 
     @UpdateTimestamp
     private Timestamp lastModifiedDate;
+
+    public boolean isNew() {
+        return this.id == null;
+    }
 }
