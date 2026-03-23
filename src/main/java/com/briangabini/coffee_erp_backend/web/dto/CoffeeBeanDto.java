@@ -1,5 +1,6 @@
 package com.briangabini.coffee_erp_backend.web.dto;
 
+import com.briangabini.coffee_erp_backend.domain.enums.RoastLevel;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,8 +29,8 @@ public class CoffeeBeanDto {
 
     @NotBlank String origin;
 
-    @NotBlank
-    private String roastLevel;
+    @NotNull
+    private RoastLevel roastLevel;
 
     @NotNull
     @Min(0)

@@ -1,5 +1,6 @@
 package com.briangabini.coffee_erp_backend.domain;
 
+import com.briangabini.coffee_erp_backend.domain.enums.RoastLevel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -22,11 +23,12 @@ public class CoffeeBean extends BaseEntity {
     @NotBlank
     String name;
 
-    @NotBlank
+    @NotNull
     private String origin;
 
     @NotBlank
-    private String roastLevel;
+    @Enumerated(EnumType.STRING)
+    private RoastLevel roastLevel;
 
     @NotNull
     @Min(0)
