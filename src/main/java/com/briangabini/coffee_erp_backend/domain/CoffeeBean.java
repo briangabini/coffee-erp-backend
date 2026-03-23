@@ -35,10 +35,12 @@ public class CoffeeBean extends BaseEntity {
     @Setter(AccessLevel.NONE)
     @ManyToMany
     @JoinTable(name = "coffee_bean_supplier")
+    @Builder.Default
     private Set<Supplier> suppliers = new HashSet<>();
 
     @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "coffeeBean", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<InventoryStock> inventoryStocks = new HashSet<>();
 
     public void addSupplier(Supplier supplier) {
