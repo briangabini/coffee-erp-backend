@@ -26,7 +26,7 @@ public class CoffeeBean extends BaseEntity {
     @NotNull
     private String origin;
 
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     private RoastLevel roastLevel;
 
