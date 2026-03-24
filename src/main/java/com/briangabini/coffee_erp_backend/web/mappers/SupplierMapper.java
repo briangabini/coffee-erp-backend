@@ -7,6 +7,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring", uses = {DateMapper.class})
 public interface SupplierMapper {
 
-    SupplierDto supplierToSupplierDto(Supplier supplier);
-    Supplier supplierDtoToSupplier(SupplierDto dto);
+    SupplierDto toSupplierDto(Supplier supplier);
+    Supplier toSupplier(SupplierDto dto);
 }

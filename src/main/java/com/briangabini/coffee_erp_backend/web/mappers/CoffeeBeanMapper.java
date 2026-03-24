@@ -7,6 +7,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring", uses = {DateMapper.class})
 public interface CoffeeBeanMapper {
 
-    CoffeeBeanDto coffeeBeanToCoffeeBeanDto(CoffeeBean coffeeBean);
-    CoffeeBean coffeeBeanDtoToCoffeeBean(CoffeeBeanDto coffeeBeanDto);
+    CoffeeBeanDto toCoffeeBeanDto(CoffeeBean coffeeBean);
+    CoffeeBean toCoffeeBean(CoffeeBeanDto dto);
 }

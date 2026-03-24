@@ -9,8 +9,8 @@ import org.mapstruct.Mapping;
 public interface InventoryStockMapper {
 
     @Mapping(source = "coffeeBean.id", target = "coffeeBeanId")
-    InventoryStockDto inventoryStockToInventoryStockDto(InventoryStock inventoryStock);
+    InventoryStockDto toInventoryStockDto(InventoryStock inventoryStock);
 
     @Mapping(target = "coffeeBean", ignore = true)
-    InventoryStock inventoryStockDtoToInventoryStock(InventoryStockDto dto);
+    InventoryStock toInventoryStock(InventoryStockDto dto);
 }
