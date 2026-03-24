@@ -96,7 +96,7 @@ public class BootstrapData implements CommandLineRunner {
         CoffeeBean colombian = beans.get(1);
 
         InventoryStock stock1 = InventoryStock.builder()
-                .coffeeBean(ethiopian) // Set the foreign key manually here
+                .coffeeBean(ethiopian)
                 .quantityGrams(50000)
                 .expiryDate(LocalDate.now().plusMonths(6))
                 .build();
