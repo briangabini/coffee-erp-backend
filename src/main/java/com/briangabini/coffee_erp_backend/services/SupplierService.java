@@ -1,6 +1,7 @@
 package com.briangabini.coffee_erp_backend.services;
 
 import com.briangabini.coffee_erp_backend.domain.Supplier;
+import com.briangabini.coffee_erp_backend.exceptions.ResourceNotFoundException;
 import com.briangabini.coffee_erp_backend.repositories.SupplierRepository;
 import com.briangabini.coffee_erp_backend.web.dto.SupplierDto;
 import com.briangabini.coffee_erp_backend.web.mappers.SupplierMapper;
@@ -33,7 +34,7 @@ public class SupplierService {
         log.info("Fetching supplier with id: {}", id);
         return supplierRepository.findById(id)
                 .map(supplierMapper::toSupplierDto)
-                .orElseThrow(() -> new RuntimeException("Supplier not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Supplier not found with id: " + id));
     }
 
     @Transactional

@@ -1,6 +1,7 @@
 package com.briangabini.coffee_erp_backend.services;
 
 import com.briangabini.coffee_erp_backend.domain.Supplier;
+import com.briangabini.coffee_erp_backend.exceptions.ResourceNotFoundException;
 import com.briangabini.coffee_erp_backend.repositories.SupplierRepository;
 import com.briangabini.coffee_erp_backend.web.dto.SupplierDto;
 import com.briangabini.coffee_erp_backend.web.mappers.SupplierMapper;
@@ -43,7 +44,7 @@ class SupplierServiceTest {
         @Test
         @DisplayName("Should return mapped DTO when supplier is found")
         void testGetSupplierById_Found() {
-            
+
             // given
             UUID testId = UUID.randomUUID();
 
@@ -86,7 +87,7 @@ class SupplierServiceTest {
             given(supplierRepository.findById(testId)).willReturn(Optional.empty());
 
             // when / then
-            assertThrows(RuntimeException.class, () -> supplierService.getSupplierById(testId));
+            assertThrows(ResourceNotFoundException.class, () -> supplierService.getSupplierById(testId));
 
             verify(supplierRepository).findById(testId);
             verifyNoInteractions(supplierMapper);

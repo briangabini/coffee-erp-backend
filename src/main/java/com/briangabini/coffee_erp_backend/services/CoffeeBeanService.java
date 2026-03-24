@@ -1,6 +1,7 @@
 package com.briangabini.coffee_erp_backend.services;
 
 import com.briangabini.coffee_erp_backend.domain.CoffeeBean;
+import com.briangabini.coffee_erp_backend.exceptions.ResourceNotFoundException;
 import com.briangabini.coffee_erp_backend.repositories.CoffeeBeanRepository;
 import com.briangabini.coffee_erp_backend.web.dto.CoffeeBeanDto;
 import com.briangabini.coffee_erp_backend.web.mappers.CoffeeBeanMapper;
@@ -33,7 +34,7 @@ public class CoffeeBeanService {
         log.info("Fetching coffee bean by id");
         return coffeeBeanRepository.findById(id)
                 .map(coffeeBeanMapper::toCoffeeBeanDto)
-                .orElseThrow(() -> new RuntimeException("Coffee Bean not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Coffee Bean not found with id: " + id));
     }
 
     @Transactional

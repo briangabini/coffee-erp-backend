@@ -2,6 +2,7 @@ package com.briangabini.coffee_erp_backend.services;
 
 import com.briangabini.coffee_erp_backend.domain.CoffeeBean;
 import com.briangabini.coffee_erp_backend.domain.InventoryStock;
+import com.briangabini.coffee_erp_backend.exceptions.ResourceNotFoundException;
 import com.briangabini.coffee_erp_backend.repositories.CoffeeBeanRepository;
 import com.briangabini.coffee_erp_backend.repositories.InventoryStockRepository;
 import com.briangabini.coffee_erp_backend.web.dto.InventoryStockDto;
@@ -36,7 +37,7 @@ public class InventoryStockService {
         log.info("Adding new inventory stock for Coffee Bean ID: {}", stockDto.getCoffeeBeanId());
 
         CoffeeBean existingBean = coffeeBeanRepository.findById(stockDto.getCoffeeBeanId())
-                .orElseThrow(() -> new RuntimeException("Cannot add stock: Coffee Bean not found with id: " + stockDto.getCoffeeBeanId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot add stock: Coffee Bean not found with id: " + stockDto.getCoffeeBeanId()));
         InventoryStock newStock = inventoryStockMapper.toInventoryStock(stockDto);
         newStock.setCoffeeBean(existingBean);
         InventoryStock savedStock = inventoryStockRepository.save(newStock);

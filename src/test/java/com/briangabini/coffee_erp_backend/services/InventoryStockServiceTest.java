@@ -2,6 +2,7 @@ package com.briangabini.coffee_erp_backend.services;
 
 import com.briangabini.coffee_erp_backend.domain.CoffeeBean;
 import com.briangabini.coffee_erp_backend.domain.InventoryStock;
+import com.briangabini.coffee_erp_backend.exceptions.ResourceNotFoundException;
 import com.briangabini.coffee_erp_backend.repositories.CoffeeBeanRepository;
 import com.briangabini.coffee_erp_backend.repositories.InventoryStockRepository;
 import com.briangabini.coffee_erp_backend.web.dto.InventoryStockDto;
@@ -117,7 +118,7 @@ class InventoryStockServiceTest {
             given(coffeeBeanRepository.findById(invalidBeanId)).willReturn(Optional.empty());
 
             // when / then
-            assertThrows(RuntimeException.class, () -> inventoryStockService.addStock(inputDto));
+            assertThrows(ResourceNotFoundException.class, () -> inventoryStockService.addStock(inputDto));
 
             verify(coffeeBeanRepository).findById(invalidBeanId);
             verifyNoInteractions(inventoryStockMapper);

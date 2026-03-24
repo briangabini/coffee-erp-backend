@@ -1,6 +1,7 @@
 package com.briangabini.coffee_erp_backend.services;
 
 import com.briangabini.coffee_erp_backend.domain.CoffeeBean;
+import com.briangabini.coffee_erp_backend.exceptions.ResourceNotFoundException;
 import com.briangabini.coffee_erp_backend.repositories.CoffeeBeanRepository;
 import com.briangabini.coffee_erp_backend.web.dto.CoffeeBeanDto;
 import com.briangabini.coffee_erp_backend.web.mappers.CoffeeBeanMapper;
@@ -85,7 +86,7 @@ public class CoffeeBeanServiceTest {
             given(coffeeBeanRepository.findById(testId)).willReturn(Optional.empty());
 
             // when / then
-            assertThrows(RuntimeException.class, () -> coffeeBeanService.getBeanById(testId));
+            assertThrows(ResourceNotFoundException.class, () -> coffeeBeanService.getBeanById(testId));
 
             verify(coffeeBeanRepository).findById(testId);
             verifyNoInteractions(coffeeBeanMapper);
