@@ -188,6 +188,7 @@ public class CoffeeBeanServiceTest {
         @Test
         @DisplayName("Should return empty list when no beans exist")
         void testGetAllBeans_Empty() {
+
             // given
             given(coffeeBeanRepository.findAll()).willReturn(Collections.emptyList());
 
