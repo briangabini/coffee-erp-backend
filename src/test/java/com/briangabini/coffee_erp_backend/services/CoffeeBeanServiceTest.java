@@ -6,6 +6,7 @@ import com.briangabini.coffee_erp_backend.web.dto.CoffeeBeanDto;
 import com.briangabini.coffee_erp_backend.web.mappers.CoffeeBeanMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,6 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
+@Tag("unit")
 @DisplayName("Coffee Bean Service Unit Tests")
 public class CoffeeBeanServiceTest {
 
@@ -180,6 +183,22 @@ public class CoffeeBeanServiceTest {
             verify(coffeeBeanRepository).findAll();
             verify(coffeeBeanMapper).toCoffeeBeanDto(entity1);
             verify(coffeeBeanMapper).toCoffeeBeanDto(entity2);
+        }
+
+        @Test
+        @DisplayName("Should return empty list when no beans exist")
+        void testGetAllBeans_Empty() {
+            // given
+            given(coffeeBeanRepository.findAll()).willReturn(Collections.emptyList());
+
+            // when
+            List<CoffeeBeanDto> results = coffeeBeanService.getAllBeans();
+
+            // then
+            assertThat(results).isEmpty();
+
+            verify(coffeeBeanRepository).findAll();
+            verifyNoInteractions(coffeeBeanMapper);
         }
     }
 }
