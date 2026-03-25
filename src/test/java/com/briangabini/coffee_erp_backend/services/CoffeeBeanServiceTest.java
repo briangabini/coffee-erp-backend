@@ -41,6 +41,9 @@ public class CoffeeBeanServiceTest {
     @InjectMocks
     CoffeeBeanService coffeeBeanService;
 
+    private final UUID VALID_ID = UUID.randomUUID();
+    private final BigDecimal DEFAULT_PRICE = new BigDecimal("10.00");
+
     @Nested
     @DisplayName("Get Bean By ID Tests")
     class GetBeanByIdTests {
@@ -50,30 +53,23 @@ public class CoffeeBeanServiceTest {
         void testGetBeanById_Found() {
 
             // given
-            UUID testId = UUID.randomUUID();
-            CoffeeBean mockEntity = CoffeeBean.builder()
-                    .id(testId)
-                    .name("Test Bean")
-                    .build();
-            CoffeeBeanDto mockDto = CoffeeBeanDto.builder()
-                    .id(testId)
-                    .name("Test Bean")
-                    .build();
+            CoffeeBean mockEntity = buildBean(VALID_ID, "Test Bean");
+            CoffeeBeanDto mockDto = buildDto(VALID_ID, "Test Bean");
 
-            given(coffeeBeanRepository.findById(testId)).willReturn(Optional.of(mockEntity));
+            given(coffeeBeanRepository.findById(VALID_ID)).willReturn(Optional.of(mockEntity));
             given(coffeeBeanMapper.toCoffeeBeanDto(mockEntity)).willReturn(mockDto);
 
             // when
-            CoffeeBeanDto result = coffeeBeanService.getBeanById(testId);
+            CoffeeBeanDto result = coffeeBeanService.getBeanById(VALID_ID);
 
             // then
             assertAll("Verify returned DTO properties",
                     () -> assertThat(result).isNotNull(),
-                    () -> assertThat(result.getId()).isEqualTo(testId),
+                    () -> assertThat(result.getId()).isEqualTo(VALID_ID),
                     () -> assertThat(result.getName()).isEqualTo("Test Bean")
             );
 
-            verify(coffeeBeanRepository).findById(testId);
+            verify(coffeeBeanRepository).findById(VALID_ID);
             verify(coffeeBeanMapper).toCoffeeBeanDto(mockEntity);
         }
 
@@ -82,13 +78,12 @@ public class CoffeeBeanServiceTest {
         void testGetBeanById_NotFound() {
 
             // given
-            UUID testId = UUID.randomUUID();
-            given(coffeeBeanRepository.findById(testId)).willReturn(Optional.empty());
+            given(coffeeBeanRepository.findById(VALID_ID)).willReturn(Optional.empty());
 
             // when / then
-            assertThrows(ResourceNotFoundException.class, () -> coffeeBeanService.getBeanById(testId));
+            assertThrows(ResourceNotFoundException.class, () -> coffeeBeanService.getBeanById(VALID_ID));
 
-            verify(coffeeBeanRepository).findById(testId);
+            verify(coffeeBeanRepository).findById(VALID_ID);
             verifyNoInteractions(coffeeBeanMapper);
         }
     }
@@ -102,26 +97,11 @@ public class CoffeeBeanServiceTest {
         void testCreateBean() {
 
             // given
-            CoffeeBeanDto inputDto = CoffeeBeanDto.builder()
-                    .name("New Bean")
-                    .pricePerKg(new BigDecimal("10"))
-                    .build();
-            CoffeeBean mappedEntity = CoffeeBean.builder()
-                    .name("New Bean")
-                    .pricePerKg(new BigDecimal("10"))
-                    .build();
+            CoffeeBeanDto inputDto = buildDto(null, "New Bean");
+            CoffeeBean mappedEntity = buildBean(null, "New Bean");
 
-            UUID savedId = UUID.randomUUID();
-            CoffeeBean savedEntity = CoffeeBean.builder()
-                    .id(savedId)
-                    .name("New Bean")
-                    .pricePerKg(new BigDecimal("10"))
-                    .build();
-            CoffeeBeanDto outputDto = CoffeeBeanDto.builder()
-                    .id(savedId)
-                    .name("New Bean")
-                    .pricePerKg(new BigDecimal("10"))
-                    .build();
+            CoffeeBean savedEntity = buildBean(VALID_ID, "New Bean");
+            CoffeeBeanDto outputDto = buildDto(VALID_ID, "New Bean");
 
             given(coffeeBeanMapper.toCoffeeBean(inputDto)).willReturn(mappedEntity);
             given(coffeeBeanRepository.save(mappedEntity)).willReturn(savedEntity);
@@ -152,21 +132,10 @@ public class CoffeeBeanServiceTest {
         void testGetAllBeans() {
 
             // given
-            CoffeeBean entity1 = CoffeeBean.builder()
-                    .name("Bean 1")
-                    .build();
-
-            CoffeeBean entity2 = CoffeeBean.builder()
-                    .name("Bean 2")
-                    .build();
-
-            CoffeeBeanDto dto1 = CoffeeBeanDto.builder()
-                    .name("Bean 1")
-                    .build();
-
-            CoffeeBeanDto dto2 = CoffeeBeanDto.builder()
-                    .name("Bean 2")
-                    .build();
+            CoffeeBean entity1 = buildBean(UUID.randomUUID(), "Bean 1");
+            CoffeeBean entity2 = buildBean(UUID.randomUUID(), "Bean 2");
+            CoffeeBeanDto dto1 = buildDto(entity1.getId(), "Bean 1");
+            CoffeeBeanDto dto2 = buildDto(entity2.getId(), "Bean 2");
 
             given(coffeeBeanRepository.findAll()).willReturn(List.of(entity1, entity2));
             given(coffeeBeanMapper.toCoffeeBeanDto(entity1)).willReturn(dto1);
@@ -202,5 +171,21 @@ public class CoffeeBeanServiceTest {
             verify(coffeeBeanRepository).findAll();
             verifyNoInteractions(coffeeBeanMapper);
         }
+    }
+
+    private CoffeeBean buildBean(UUID id, String name) {
+        return CoffeeBean.builder()
+                .id(id)
+                .name(name)
+                .pricePerKg(DEFAULT_PRICE)
+                .build();
+    }
+
+    private CoffeeBeanDto buildDto(UUID id, String name) {
+        return CoffeeBeanDto.builder()
+                .id(id)
+                .name(name)
+                .pricePerKg(DEFAULT_PRICE)
+                .build();
     }
 }

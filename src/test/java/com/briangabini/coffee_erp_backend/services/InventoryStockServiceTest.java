@@ -42,6 +42,10 @@ class InventoryStockServiceTest {
     @InjectMocks
     InventoryStockService inventoryStockService;
 
+    private final UUID VALID_BEAN_ID = UUID.randomUUID();
+    private final UUID VALID_STOCK_ID = UUID.randomUUID();
+    private final int DEFAULT_QUANTITY = 500;
+
     @Nested
     @DisplayName("Add Stock Tests")
     class AddStockTests {
@@ -49,38 +53,14 @@ class InventoryStockServiceTest {
         @Test
         @DisplayName("Should fetch bean, map, attach, save, and return DTO (Happy Path)")
         void testAddStock_Success() {
-
             // given
-            UUID beanId = UUID.randomUUID();
-            UUID stockId = UUID.randomUUID();
+            CoffeeBean existingBean = buildBean(VALID_BEAN_ID);
+            InventoryStockDto inputDto = buildStockDto(null, DEFAULT_QUANTITY, VALID_BEAN_ID);
+            InventoryStock unlinkedStock = buildStock(null, DEFAULT_QUANTITY, null);
+            InventoryStock savedStock = buildStock(VALID_STOCK_ID, DEFAULT_QUANTITY, existingBean);
+            InventoryStockDto outputDto = buildStockDto(VALID_STOCK_ID, DEFAULT_QUANTITY, VALID_BEAN_ID);
 
-            InventoryStockDto inputDto = InventoryStockDto.builder()
-                    .coffeeBeanId(beanId)
-                    .quantityGrams(500)
-                    .build();
-
-            CoffeeBean existingBean = CoffeeBean.builder()
-                    .id(beanId)
-                    .name("Target Bean")
-                    .build();
-
-            InventoryStock unlinkedStock = InventoryStock.builder()
-                    .quantityGrams(500)
-                    .build();
-
-            InventoryStock savedStock = InventoryStock.builder()
-                    .id(stockId)
-                    .coffeeBean(existingBean)
-                    .quantityGrams(500)
-                    .build();
-
-            InventoryStockDto outputDto = InventoryStockDto.builder()
-                    .id(stockId)
-                    .coffeeBeanId(beanId)
-                    .quantityGrams(500)
-                    .build();
-
-            given(coffeeBeanRepository.findById(beanId)).willReturn(Optional.of(existingBean));
+            given(coffeeBeanRepository.findById(VALID_BEAN_ID)).willReturn(Optional.of(existingBean));
             given(inventoryStockMapper.toInventoryStock(inputDto)).willReturn(unlinkedStock);
             given(inventoryStockRepository.save(unlinkedStock)).willReturn(savedStock);
             given(inventoryStockMapper.toInventoryStockDto(savedStock)).willReturn(outputDto);
@@ -91,12 +71,12 @@ class InventoryStockServiceTest {
             // then
             assertAll("Verify returned stock properties",
                     () -> assertThat(result).isNotNull(),
-                    () -> assertThat(result.getId()).isEqualTo(stockId),
-                    () -> assertThat(result.getCoffeeBeanId()).isEqualTo(beanId),
-                    () -> assertThat(result.getQuantityGrams()).isEqualTo(500)
+                    () -> assertThat(result.getId()).isEqualTo(VALID_STOCK_ID),
+                    () -> assertThat(result.getCoffeeBeanId()).isEqualTo(VALID_BEAN_ID),
+                    () -> assertThat(result.getQuantityGrams()).isEqualTo(DEFAULT_QUANTITY)
             );
 
-            verify(coffeeBeanRepository).findById(beanId);
+            verify(coffeeBeanRepository).findById(VALID_BEAN_ID);
             verify(inventoryStockMapper).toInventoryStock(inputDto);
             assertThat(unlinkedStock.getCoffeeBean()).isEqualTo(existingBean);
             verify(inventoryStockRepository).save(unlinkedStock);
@@ -108,19 +88,14 @@ class InventoryStockServiceTest {
         void testAddStock_BeanNotFound() {
 
             // given
-            UUID invalidBeanId = UUID.randomUUID();
+            InventoryStockDto inputDto = buildStockDto(null, DEFAULT_QUANTITY, VALID_BEAN_ID);
 
-            InventoryStockDto inputDto = InventoryStockDto.builder()
-                    .coffeeBeanId(invalidBeanId)
-                    .quantityGrams(500)
-                    .build();
-
-            given(coffeeBeanRepository.findById(invalidBeanId)).willReturn(Optional.empty());
+            given(coffeeBeanRepository.findById(VALID_BEAN_ID)).willReturn(Optional.empty());
 
             // when / then
             assertThrows(ResourceNotFoundException.class, () -> inventoryStockService.addStock(inputDto));
 
-            verify(coffeeBeanRepository).findById(invalidBeanId);
+            verify(coffeeBeanRepository).findById(VALID_BEAN_ID);
             verifyNoInteractions(inventoryStockMapper);
             verifyNoInteractions(inventoryStockRepository);
         }
@@ -135,11 +110,11 @@ class InventoryStockServiceTest {
         void testGetAllStock() {
 
             // given
-            InventoryStock stock1 = InventoryStock.builder().quantityGrams(100).build();
-            InventoryStock stock2 = InventoryStock.builder().quantityGrams(200).build();
+            InventoryStock stock1 = buildStock(UUID.randomUUID(), 100, null);
+            InventoryStock stock2 = buildStock(UUID.randomUUID(), 200, null);
 
-            InventoryStockDto dto1 = InventoryStockDto.builder().quantityGrams(100).build();
-            InventoryStockDto dto2 = InventoryStockDto.builder().quantityGrams(200).build();
+            InventoryStockDto dto1 = buildStockDto(stock1.getId(), 100, VALID_BEAN_ID);
+            InventoryStockDto dto2 = buildStockDto(stock2.getId(), 200, VALID_BEAN_ID);
 
             given(inventoryStockRepository.findAll()).willReturn(List.of(stock1, stock2));
             given(inventoryStockMapper.toInventoryStockDto(stock1)).willReturn(dto1);
@@ -158,5 +133,28 @@ class InventoryStockServiceTest {
             verify(inventoryStockMapper).toInventoryStockDto(stock1);
             verify(inventoryStockMapper).toInventoryStockDto(stock2);
         }
+    }
+
+    private CoffeeBean buildBean(UUID id) {
+        return CoffeeBean.builder()
+                .id(id)
+                .name("Target Bean")
+                .build();
+    }
+
+    private InventoryStock buildStock(UUID id, int quantityGrams, CoffeeBean coffeeBean) {
+        return InventoryStock.builder()
+                .id(id)
+                .quantityGrams(quantityGrams)
+                .coffeeBean(coffeeBean)
+                .build();
+    }
+
+    private InventoryStockDto buildStockDto(UUID id, int quantityGrams, UUID coffeeBeanId) {
+        return InventoryStockDto.builder()
+                .id(id)
+                .coffeeBeanId(coffeeBeanId)
+                .quantityGrams(quantityGrams)
+                .build();
     }
 }

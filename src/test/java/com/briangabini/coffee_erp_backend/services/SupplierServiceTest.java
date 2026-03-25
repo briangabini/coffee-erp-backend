@@ -37,6 +37,12 @@ class SupplierServiceTest {
     @InjectMocks
     SupplierService supplierService;
 
+    private final UUID VALID_ID = UUID.randomUUID();
+    private final String VALID_NAME = "Global Bean Importers";
+    private final String VALID_EMAIL = "hello@globalbeans.com";
+    private final String NEW_NAME = "New Supplier";
+    private final String NEW_EMAIL = "sales@newsupplier.com";
+
     @Nested
     @DisplayName("Get Supplier By ID Tests")
     class GetSupplierByIdTests {
@@ -46,35 +52,24 @@ class SupplierServiceTest {
         void testGetSupplierById_Found() {
 
             // given
-            UUID testId = UUID.randomUUID();
+            Supplier mockEntity = buildSupplier(VALID_ID, VALID_NAME, VALID_EMAIL);
+            SupplierDto mockDto = buildSupplierDto(VALID_ID, VALID_NAME, VALID_EMAIL);
 
-            Supplier mockEntity = Supplier.builder()
-                    .id(testId)
-                    .name("Global Bean Importers")
-                    .contactEmail("hello@globalbeans.com")
-                    .build();
-
-            SupplierDto mockDto = SupplierDto.builder()
-                    .id(testId)
-                    .name("Global Bean Importers")
-                    .contactEmail("hello@globalbeans.com")
-                    .build();
-
-            given(supplierRepository.findById(testId)).willReturn(Optional.of(mockEntity));
+            given(supplierRepository.findById(VALID_ID)).willReturn(Optional.of(mockEntity));
             given(supplierMapper.toSupplierDto(mockEntity)).willReturn(mockDto);
 
             // when
-            SupplierDto result = supplierService.getSupplierById(testId);
+            SupplierDto result = supplierService.getSupplierById(VALID_ID);
 
             // then
             assertAll("Verify returned DTO properties",
                     () -> assertThat(result).isNotNull(),
-                    () -> assertThat(result.getId()).isEqualTo(testId),
-                    () -> assertThat(result.getName()).isEqualTo("Global Bean Importers"),
-                    () -> assertThat(result.getContactEmail()).isEqualTo("hello@globalbeans.com")
+                    () -> assertThat(result.getId()).isEqualTo(VALID_ID),
+                    () -> assertThat(result.getName()).isEqualTo(VALID_NAME),
+                    () -> assertThat(result.getContactEmail()).isEqualTo(VALID_EMAIL)
             );
 
-            verify(supplierRepository).findById(testId);
+            verify(supplierRepository).findById(VALID_ID);
             verify(supplierMapper).toSupplierDto(mockEntity);
         }
 
@@ -83,13 +78,12 @@ class SupplierServiceTest {
         void testGetSupplierById_NotFound() {
 
             // given
-            UUID testId = UUID.randomUUID();
-            given(supplierRepository.findById(testId)).willReturn(Optional.empty());
+            given(supplierRepository.findById(VALID_ID)).willReturn(Optional.empty());
 
             // when / then
-            assertThrows(ResourceNotFoundException.class, () -> supplierService.getSupplierById(testId));
+            assertThrows(ResourceNotFoundException.class, () -> supplierService.getSupplierById(VALID_ID));
 
-            verify(supplierRepository).findById(testId);
+            verify(supplierRepository).findById(VALID_ID);
             verifyNoInteractions(supplierMapper);
         }
     }
@@ -103,29 +97,10 @@ class SupplierServiceTest {
         void testCreateSupplier() {
 
             // given
-            SupplierDto inputDto = SupplierDto.builder()
-                    .name("New Supplier")
-                    .contactEmail("sales@newsupplier.com")
-                    .build();
-
-            Supplier mappedEntity = Supplier.builder()
-                    .name("New Supplier")
-                    .contactEmail("sales@newsupplier.com")
-                    .build();
-
-            UUID savedId = UUID.randomUUID();
-
-            Supplier savedEntity = Supplier.builder()
-                    .id(savedId)
-                    .name("New Supplier")
-                    .contactEmail("sales@newsupplier.com")
-                    .build();
-
-            SupplierDto outputDto = SupplierDto.builder()
-                    .id(savedId)
-                    .name("New Supplier")
-                    .contactEmail("sales@newsupplier.com")
-                    .build();
+            SupplierDto inputDto = buildSupplierDto(null, NEW_NAME, NEW_EMAIL);
+            Supplier mappedEntity = buildSupplier(null, NEW_NAME, NEW_EMAIL);
+            Supplier savedEntity = buildSupplier(VALID_ID, NEW_NAME, NEW_EMAIL);
+            SupplierDto outputDto = buildSupplierDto(VALID_ID, NEW_NAME, NEW_EMAIL);
 
             given(supplierMapper.toSupplier(inputDto)).willReturn(mappedEntity);
             given(supplierRepository.save(mappedEntity)).willReturn(savedEntity);
@@ -137,9 +112,9 @@ class SupplierServiceTest {
             // then
             assertAll("Verify created DTO properties",
                     () -> assertThat(result).isNotNull(),
-                    () -> assertThat(result.getId()).isEqualTo(savedId),
-                    () -> assertThat(result.getName()).isEqualTo("New Supplier"),
-                    () -> assertThat(result.getContactEmail()).isEqualTo("sales@newsupplier.com")
+                    () -> assertThat(result.getId()).isEqualTo(VALID_ID),
+                    () -> assertThat(result.getName()).isEqualTo(NEW_NAME),
+                    () -> assertThat(result.getContactEmail()).isEqualTo(NEW_EMAIL)
             );
 
             verify(supplierMapper).toSupplier(inputDto);
@@ -157,25 +132,11 @@ class SupplierServiceTest {
         void testGetAllSuppliers() {
 
             // given
-            Supplier entity1 = Supplier.builder()
-                    .name("Supplier 1")
-                    .contactEmail("one@supplier.com")
-                    .build();
+            Supplier entity1 = buildSupplier(UUID.randomUUID(), VALID_NAME, VALID_EMAIL);
+            Supplier entity2 = buildSupplier(UUID.randomUUID(), NEW_NAME, NEW_EMAIL);
 
-            Supplier entity2 = Supplier.builder()
-                    .name("Supplier 2")
-                    .contactEmail("two@supplier.com")
-                    .build();
-
-            SupplierDto dto1 = SupplierDto.builder()
-                    .name("Supplier 1")
-                    .contactEmail("one@supplier.com")
-                    .build();
-
-            SupplierDto dto2 = SupplierDto.builder()
-                    .name("Supplier 2")
-                    .contactEmail("two@supplier.com")
-                    .build();
+            SupplierDto dto1 = buildSupplierDto(entity1.getId(), VALID_NAME, VALID_EMAIL);
+            SupplierDto dto2 = buildSupplierDto(entity2.getId(), NEW_NAME, NEW_EMAIL);
 
             given(supplierRepository.findAll()).willReturn(List.of(entity1, entity2));
             given(supplierMapper.toSupplierDto(entity1)).willReturn(dto1);
@@ -194,5 +155,21 @@ class SupplierServiceTest {
             verify(supplierMapper).toSupplierDto(entity1);
             verify(supplierMapper).toSupplierDto(entity2);
         }
+    }
+
+    private Supplier buildSupplier(UUID id, String name, String contactEmail) {
+        return Supplier.builder()
+                .id(id)
+                .name(name)
+                .contactEmail(contactEmail)
+                .build();
+    }
+
+    private SupplierDto buildSupplierDto(UUID id, String name, String contactEmail) {
+        return SupplierDto.builder()
+                .id(id)
+                .name(name)
+                .contactEmail(contactEmail)
+                .build();
     }
 }
