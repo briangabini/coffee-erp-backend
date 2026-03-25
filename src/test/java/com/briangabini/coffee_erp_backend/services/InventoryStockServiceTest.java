@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.briangabini.coffee_erp_backend.fixtures.TestFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -42,10 +43,6 @@ class InventoryStockServiceTest {
     @InjectMocks
     InventoryStockService inventoryStockService;
 
-    private final UUID VALID_BEAN_ID = UUID.randomUUID();
-    private final UUID VALID_STOCK_ID = UUID.randomUUID();
-    private final int DEFAULT_QUANTITY = 500;
-
     @Nested
     @DisplayName("Add Stock Tests")
     class AddStockTests {
@@ -53,8 +50,9 @@ class InventoryStockServiceTest {
         @Test
         @DisplayName("Should fetch bean, map, attach, save, and return DTO (Happy Path)")
         void testAddStock_Success() {
+
             // given
-            CoffeeBean existingBean = buildBean(VALID_BEAN_ID);
+            CoffeeBean existingBean = buildBean(VALID_BEAN_ID, VALID_BEAN_NAME);
             InventoryStockDto inputDto = buildStockDto(null, DEFAULT_QUANTITY, VALID_BEAN_ID);
             InventoryStock unlinkedStock = buildStock(null, DEFAULT_QUANTITY, null);
             InventoryStock savedStock = buildStock(VALID_STOCK_ID, DEFAULT_QUANTITY, existingBean);
@@ -133,28 +131,5 @@ class InventoryStockServiceTest {
             verify(inventoryStockMapper).toInventoryStockDto(stock1);
             verify(inventoryStockMapper).toInventoryStockDto(stock2);
         }
-    }
-
-    private CoffeeBean buildBean(UUID id) {
-        return CoffeeBean.builder()
-                .id(id)
-                .name("Target Bean")
-                .build();
-    }
-
-    private InventoryStock buildStock(UUID id, int quantityGrams, CoffeeBean coffeeBean) {
-        return InventoryStock.builder()
-                .id(id)
-                .quantityGrams(quantityGrams)
-                .coffeeBean(coffeeBean)
-                .build();
-    }
-
-    private InventoryStockDto buildStockDto(UUID id, int quantityGrams, UUID coffeeBeanId) {
-        return InventoryStockDto.builder()
-                .id(id)
-                .coffeeBeanId(coffeeBeanId)
-                .quantityGrams(quantityGrams)
-                .build();
     }
 }

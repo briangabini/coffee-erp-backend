@@ -14,12 +14,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.briangabini.coffee_erp_backend.fixtures.TestFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -41,9 +41,6 @@ public class CoffeeBeanServiceTest {
     @InjectMocks
     CoffeeBeanService coffeeBeanService;
 
-    private final UUID VALID_ID = UUID.randomUUID();
-    private final BigDecimal DEFAULT_PRICE = new BigDecimal("10.00");
-
     @Nested
     @DisplayName("Get Bean By ID Tests")
     class GetBeanByIdTests {
@@ -53,23 +50,23 @@ public class CoffeeBeanServiceTest {
         void testGetBeanById_Found() {
 
             // given
-            CoffeeBean mockEntity = buildBean(VALID_ID, "Test Bean");
-            CoffeeBeanDto mockDto = buildDto(VALID_ID, "Test Bean");
+            CoffeeBean mockEntity = buildBean(VALID_BEAN_ID, VALID_BEAN_NAME);
+            CoffeeBeanDto mockDto = buildBeanDto(VALID_BEAN_ID, VALID_BEAN_NAME);
 
-            given(coffeeBeanRepository.findById(VALID_ID)).willReturn(Optional.of(mockEntity));
+            given(coffeeBeanRepository.findById(VALID_BEAN_ID)).willReturn(Optional.of(mockEntity));
             given(coffeeBeanMapper.toCoffeeBeanDto(mockEntity)).willReturn(mockDto);
 
             // when
-            CoffeeBeanDto result = coffeeBeanService.getBeanById(VALID_ID);
+            CoffeeBeanDto result = coffeeBeanService.getBeanById(VALID_BEAN_ID);
 
             // then
             assertAll("Verify returned DTO properties",
                     () -> assertThat(result).isNotNull(),
-                    () -> assertThat(result.getId()).isEqualTo(VALID_ID),
-                    () -> assertThat(result.getName()).isEqualTo("Test Bean")
+                    () -> assertThat(result.getId()).isEqualTo(VALID_BEAN_ID),
+                    () -> assertThat(result.getName()).isEqualTo(VALID_BEAN_NAME)
             );
 
-            verify(coffeeBeanRepository).findById(VALID_ID);
+            verify(coffeeBeanRepository).findById(VALID_BEAN_ID);
             verify(coffeeBeanMapper).toCoffeeBeanDto(mockEntity);
         }
 
@@ -78,12 +75,12 @@ public class CoffeeBeanServiceTest {
         void testGetBeanById_NotFound() {
 
             // given
-            given(coffeeBeanRepository.findById(VALID_ID)).willReturn(Optional.empty());
+            given(coffeeBeanRepository.findById(VALID_BEAN_ID)).willReturn(Optional.empty());
 
             // when / then
-            assertThrows(ResourceNotFoundException.class, () -> coffeeBeanService.getBeanById(VALID_ID));
+            assertThrows(ResourceNotFoundException.class, () -> coffeeBeanService.getBeanById(VALID_BEAN_ID));
 
-            verify(coffeeBeanRepository).findById(VALID_ID);
+            verify(coffeeBeanRepository).findById(VALID_BEAN_ID);
             verifyNoInteractions(coffeeBeanMapper);
         }
     }
@@ -97,11 +94,11 @@ public class CoffeeBeanServiceTest {
         void testCreateBean() {
 
             // given
-            CoffeeBeanDto inputDto = buildDto(null, "New Bean");
-            CoffeeBean mappedEntity = buildBean(null, "New Bean");
+            CoffeeBeanDto inputDto = buildBeanDto(null, NEW_BEAN_NAME);
+            CoffeeBean mappedEntity = buildBean(null, NEW_BEAN_NAME);
 
-            CoffeeBean savedEntity = buildBean(VALID_ID, "New Bean");
-            CoffeeBeanDto outputDto = buildDto(VALID_ID, "New Bean");
+            CoffeeBean savedEntity = buildBean(VALID_BEAN_ID, NEW_BEAN_NAME);
+            CoffeeBeanDto outputDto = buildBeanDto(VALID_BEAN_ID, NEW_BEAN_NAME);
 
             given(coffeeBeanMapper.toCoffeeBean(inputDto)).willReturn(mappedEntity);
             given(coffeeBeanRepository.save(mappedEntity)).willReturn(savedEntity);
@@ -113,8 +110,8 @@ public class CoffeeBeanServiceTest {
             // then
             assertAll("Verify created DTO properties",
                     () -> assertThat(result).isNotNull(),
-                    () -> assertThat(result.getId()).isNotNull(),
-                    () -> assertThat(result.getName()).isEqualTo("New Bean")
+                    () -> assertThat(result.getId()).isEqualTo(VALID_BEAN_ID),
+                    () -> assertThat(result.getName()).isEqualTo(NEW_BEAN_NAME)
             );
 
             verify(coffeeBeanMapper).toCoffeeBean(inputDto);
@@ -132,10 +129,10 @@ public class CoffeeBeanServiceTest {
         void testGetAllBeans() {
 
             // given
-            CoffeeBean entity1 = buildBean(UUID.randomUUID(), "Bean 1");
-            CoffeeBean entity2 = buildBean(UUID.randomUUID(), "Bean 2");
-            CoffeeBeanDto dto1 = buildDto(entity1.getId(), "Bean 1");
-            CoffeeBeanDto dto2 = buildDto(entity2.getId(), "Bean 2");
+            CoffeeBean entity1 = buildBean(UUID.randomUUID(), BEAN_1_NAME);
+            CoffeeBean entity2 = buildBean(UUID.randomUUID(), BEAN_2_NAME);
+            CoffeeBeanDto dto1 = buildBeanDto(entity1.getId(), BEAN_1_NAME);
+            CoffeeBeanDto dto2 = buildBeanDto(entity2.getId(), BEAN_2_NAME);
 
             given(coffeeBeanRepository.findAll()).willReturn(List.of(entity1, entity2));
             given(coffeeBeanMapper.toCoffeeBeanDto(entity1)).willReturn(dto1);
@@ -171,21 +168,5 @@ public class CoffeeBeanServiceTest {
             verify(coffeeBeanRepository).findAll();
             verifyNoInteractions(coffeeBeanMapper);
         }
-    }
-
-    private CoffeeBean buildBean(UUID id, String name) {
-        return CoffeeBean.builder()
-                .id(id)
-                .name(name)
-                .pricePerKg(DEFAULT_PRICE)
-                .build();
-    }
-
-    private CoffeeBeanDto buildDto(UUID id, String name) {
-        return CoffeeBeanDto.builder()
-                .id(id)
-                .name(name)
-                .pricePerKg(DEFAULT_PRICE)
-                .build();
     }
 }
