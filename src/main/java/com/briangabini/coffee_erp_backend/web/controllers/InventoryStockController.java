@@ -1,4 +1,4 @@
-package com.briangabini.coffee_erp_backend.controllers;
+package com.briangabini.coffee_erp_backend.web.controllers;
 
 import com.briangabini.coffee_erp_backend.services.InventoryStockService;
 import com.briangabini.coffee_erp_backend.web.dto.InventoryStockDto;

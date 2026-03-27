@@ -1,6 +1,5 @@
-package com.briangabini.coffee_erp_backend.controllers;
+package com.briangabini.coffee_erp_backend.web.controllers;
 
-import com.briangabini.coffee_erp_backend.controllers.SupplierController;
 import com.briangabini.coffee_erp_backend.exceptions.ResourceNotFoundException;
 import com.briangabini.coffee_erp_backend.services.SupplierService;
 import com.briangabini.coffee_erp_backend.web.dto.SupplierDto;
@@ -17,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-// The Single Source of Truth
 import static com.briangabini.coffee_erp_backend.fixtures.TestFixtures.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

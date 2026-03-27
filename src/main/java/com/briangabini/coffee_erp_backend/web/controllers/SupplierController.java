@@ -1,4 +1,4 @@
-package com.briangabini.coffee_erp_backend.controllers;
+package com.briangabini.coffee_erp_backend.web.controllers;
 
 import com.briangabini.coffee_erp_backend.services.SupplierService;
 import com.briangabini.coffee_erp_backend.web.dto.SupplierDto;
