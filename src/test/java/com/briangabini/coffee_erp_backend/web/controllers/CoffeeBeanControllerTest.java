@@ -193,7 +193,7 @@ public class CoffeeBeanControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(inputJson))
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.pricePerKg").value(ValidationMessages.PRICE_NEGATIVE));
+                    .andExpect(jsonPath("$.pricePerKg").value(ValidationMessages.MUST_BE_GREATER_THAN_OR_EQUAL_TO_0));
         }
     }
 }
