@@ -22,10 +22,10 @@ public class InventoryStockDto {
     private OffsetDateTime createdDate;
     private OffsetDateTime lastModifiedDate;
 
-    @NotNull
+    @NotNull(message = ValidationMessages.COFFEE_BEAN_ID_REQUIRED)
     private UUID coffeeBeanId;
 
-    @NotNull
+    @NotNull(message = ValidationMessages.QUANTITY_REQUIRED)
     @Min(0)
     private Integer quantityGrams;
 
