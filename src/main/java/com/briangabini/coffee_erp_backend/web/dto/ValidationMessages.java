@@ -18,4 +18,9 @@ public final class ValidationMessages {
     // --- Inventory Stock Messages ---
     public static final String COFFEE_BEAN_ID_REQUIRED = "Coffee Bean ID is required";
     public static final String QUANTITY_REQUIRED = "Quantity is required";
+
+    // --- Supplier Messages ---
+    public static final String SUPPLIER_NAME_REQUIRED = "Supplier name is required";
+    public static final String EMAIL_REQUIRED = "Contact email is required";
+    public static final String EMAIL_INVALID = "Must be a valid email format";
 }
