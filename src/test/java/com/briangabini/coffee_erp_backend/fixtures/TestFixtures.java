@@ -17,7 +17,7 @@ public final class TestFixtures {
     public static final UUID VALID_STOCK_ID = UUID.randomUUID();
     public static final UUID VALID_SUPPLIER_ID = UUID.randomUUID();
 
-    public static final BigDecimal DEFAULT_PRICE = new BigDecimal("10.00");
+    public static final BigDecimal DEFAULT_PRICE = new BigDecimal("10.0");
     public static final int DEFAULT_QUANTITY = 500;
 
     // --- String Constants ---
