@@ -60,7 +60,7 @@ public final class TestFixtures {
     }
 
     // --- Inventory Stock Fixtures ---
-    public static InventoryStock buildStock(UUID id, int quantityGrams, CoffeeBean coffeeBean) {
+    public static InventoryStock buildStock(UUID id, Integer quantityGrams, CoffeeBean coffeeBean) {
         return InventoryStock.builder()
                 .id(id)
                 .quantityGrams(quantityGrams)
@@ -68,7 +68,7 @@ public final class TestFixtures {
                 .build();
     }
 
-    public static InventoryStockDto buildStockDto(UUID id, int quantityGrams, UUID coffeeBeanId) {
+    public static InventoryStockDto buildStockDto(UUID id, Integer quantityGrams, UUID coffeeBeanId) {
         return InventoryStockDto.builder()
                 .id(id)
                 .coffeeBeanId(coffeeBeanId)
