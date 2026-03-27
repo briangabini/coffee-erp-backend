@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Getter
@@ -29,10 +30,10 @@ public class BaseEntity {
 
     @CreationTimestamp
     @Column(updatable = false)
-    private Timestamp createdDate;
+    private OffsetDateTime createdDate;
 
     @UpdateTimestamp
-    private Timestamp lastModifiedDate;
+    private OffsetDateTime lastModifiedDate;
 
     public boolean isNew() {
         return this.id == null;

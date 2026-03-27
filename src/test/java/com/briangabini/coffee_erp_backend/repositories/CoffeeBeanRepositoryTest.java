@@ -3,6 +3,7 @@ package com.briangabini.coffee_erp_backend.repositories;
 import com.briangabini.coffee_erp_backend.domain.CoffeeBean;
 import com.briangabini.coffee_erp_backend.domain.InventoryStock;
 import com.briangabini.coffee_erp_backend.domain.Supplier;
+import com.briangabini.coffee_erp_backend.domain.enums.RoastLevel;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -48,7 +49,7 @@ class CoffeeBeanRepositoryTest {
             CoffeeBean newBean = CoffeeBean.builder()
                     .name("Ethiopian Yirgacheffe")
                     .origin("Ethiopia")
-                    .roastLevel("Light")
+                    .roastLevel(RoastLevel.LIGHT)
                     .pricePerKg(new BigDecimal("25.60"))
                     .build();
 
@@ -73,7 +74,7 @@ class CoffeeBeanRepositoryTest {
             CoffeeBean newBean = CoffeeBean.builder()
                     .name("Sumatra Mandheling")
                     .origin("Indonesia")
-                    .roastLevel("Dark")
+                    .roastLevel(RoastLevel.DARK)
                     .pricePerKg(new BigDecimal("18.50"))
                     .build();
 
@@ -111,7 +112,7 @@ class CoffeeBeanRepositoryTest {
             CoffeeBean newBean = CoffeeBean.builder()
                     .name("Colombian Supremo")
                     .origin("Colombia")
-                    .roastLevel("Medium")
+                    .roastLevel(RoastLevel.MEDIUM)
                     .pricePerKg(new BigDecimal("21.00"))
                     .build();
             newBean.addSupplier(savedSupplier);
@@ -139,7 +140,7 @@ class CoffeeBeanRepositoryTest {
             CoffeeBean badBean = CoffeeBean.builder()
                     .name("Bad Bean")
                     .origin("Unknown")
-                    .roastLevel("Dark")
+                    .roastLevel(RoastLevel.MEDIUM)
                     .pricePerKg(new BigDecimal("-5.00"))
                     .build();
 

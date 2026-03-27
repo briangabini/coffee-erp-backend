@@ -2,6 +2,7 @@ package com.briangabini.coffee_erp_backend.repositories;
 
 import com.briangabini.coffee_erp_backend.domain.CoffeeBean;
 import com.briangabini.coffee_erp_backend.domain.InventoryStock;
+import com.briangabini.coffee_erp_backend.domain.enums.RoastLevel;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class InventoryStockRepositoryTest {
         testBean = CoffeeBean.builder()
                 .name("Test Bean")
                 .origin("Test Origin")
-                .roastLevel("Medium")
+                .roastLevel(RoastLevel.MEDIUM)
                 .pricePerKg(new BigDecimal("15.00"))
                 .build();
         coffeeBeanRepository.save(testBean);
