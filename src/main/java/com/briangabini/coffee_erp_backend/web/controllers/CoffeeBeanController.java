@@ -2,6 +2,7 @@ package com.briangabini.coffee_erp_backend.web.controllers;
 
 import com.briangabini.coffee_erp_backend.services.CoffeeBeanService;
 import com.briangabini.coffee_erp_backend.web.dto.CoffeeBeanDto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,7 @@ public class CoffeeBeanController {
     }
 
     @PostMapping
-    public ResponseEntity<CoffeeBeanDto> createBean(@RequestBody CoffeeBeanDto coffeeBeanDto) {
+    public ResponseEntity<CoffeeBeanDto> createBean(@Valid @RequestBody CoffeeBeanDto coffeeBeanDto) {
         log.info("REST request to create new coffee bean: {}", coffeeBeanDto.getName());
 
         CoffeeBeanDto savedBean = coffeeBeanService.createBean(coffeeBeanDto);

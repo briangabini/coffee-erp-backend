@@ -124,4 +124,115 @@ public class CoffeeBeanControllerTest {
                     .andExpect(header().string("Location", "http://localhost" + API_URL + "/" + VALID_BEAN_ID));
         }
     }
+
+    @Nested
+    @DisplayName("POST /api/v1/coffee-beans - Validation")
+    class CreateBeanValidationEndpoints {
+
+        @Test
+        @DisplayName("Should return 400 Bad Request when bean name is blank")
+        void createBean_NameIsBlank() throws Exception {
+            // given valid data EXCEPT for name
+            CoffeeBeanDto invalidDto = CoffeeBeanDto.builder()
+                    .name("")
+                    .origin(VALID_ORIGIN)
+                    .roastLevel(VALID_ROAST_LEVEL)
+                    .pricePerKg(DEFAULT_PRICE)
+                    .build();
+
+            String inputJson = objectmapper.writeValueAsString(invalidDto);
+
+            // when / then
+            mockMvc.perform(post(API_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(inputJson))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.name").value("Bean name is required"));
+        }
+
+        @Test
+        @DisplayName("Should return 400 Bad Request when origin is blank")
+        void createBean_OriginIsBlank() throws Exception {
+            // given valid data EXCEPT for origin
+            CoffeeBeanDto invalidDto = CoffeeBeanDto.builder()
+                    .name(VALID_BEAN_NAME)
+                    .origin("")
+                    .roastLevel(VALID_ROAST_LEVEL)
+                    .pricePerKg(DEFAULT_PRICE)
+                    .build();
+
+            String inputJson = objectmapper.writeValueAsString(invalidDto);
+
+            // when / then
+            mockMvc.perform(post(API_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(inputJson))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.origin").value("Origin is required"));
+        }
+
+        @Test
+        @DisplayName("Should return 400 Bad Request when roast level is null")
+        void createBean_RoastLevelIsNull() throws Exception {
+            // given valid data EXCEPT for roast level
+            CoffeeBeanDto invalidDto = CoffeeBeanDto.builder()
+                    .name(VALID_BEAN_NAME)
+                    .origin(VALID_ORIGIN)
+                    .roastLevel(null)
+                    .pricePerKg(DEFAULT_PRICE)
+                    .build();
+
+            String inputJson = objectmapper.writeValueAsString(invalidDto);
+
+            // when / then
+            mockMvc.perform(post(API_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(inputJson))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.roastLevel").value("Roast level is required"));
+        }
+
+        @Test
+        @DisplayName("Should return 400 Bad Request when price is null")
+        void createBean_PriceIsNull() throws Exception {
+            // given valid data EXCEPT for price
+            CoffeeBeanDto invalidDto = CoffeeBeanDto.builder()
+                    .name(VALID_BEAN_NAME)
+                    .origin(VALID_ORIGIN)
+                    .roastLevel(VALID_ROAST_LEVEL)
+                    .pricePerKg(null)
+                    .build();
+
+            String inputJson = objectmapper.writeValueAsString(invalidDto);
+
+            // when / then
+            mockMvc.perform(post(API_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(inputJson))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.pricePerKg").value("Price per kg is required"));
+        }
+
+        @Test
+        @DisplayName("Should return 400 Bad Request when price is negative")
+        void createBean_PriceIsNegative() throws Exception {
+            // given valid data EXCEPT for a negative price
+            CoffeeBeanDto invalidDto = CoffeeBeanDto.builder()
+                    .name(VALID_BEAN_NAME)
+                    .origin(VALID_ORIGIN)
+                    .roastLevel(VALID_ROAST_LEVEL)
+                    .pricePerKg(new java.math.BigDecimal("-5.00"))
+                    .build();
+
+            String inputJson = objectmapper.writeValueAsString(invalidDto);
+
+            // when / then
+            mockMvc.perform(post(API_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(inputJson))
+                    .andExpect(status().isBadRequest())
+                    // This expects the default Hibernate Validator message for @Min
+                    .andExpect(jsonPath("$.pricePerKg").value("must be greater than or equal to 0"));
+        }
+    }
 }
