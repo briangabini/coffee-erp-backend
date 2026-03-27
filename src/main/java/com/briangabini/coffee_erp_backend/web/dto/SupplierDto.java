@@ -21,10 +21,10 @@ public class SupplierDto {
     private OffsetDateTime createdDate;
     private OffsetDateTime lastModifiedDate;
 
-    @NotBlank
+    @NotBlank(message = ValidationMessages.SUPPLIER_NAME_REQUIRED)
     private String name;
 
-    @NotBlank
-    @Email
-    private String contactEmail;
+    @NotBlank(message = ValidationMessages.EMAIL_REQUIRED)
+    @Email(message = ValidationMessages.EMAIL_INVALID)
+    private String contactEmail;;
 }
