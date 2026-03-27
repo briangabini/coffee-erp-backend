@@ -26,5 +26,5 @@ public class SupplierDto {
 
     @NotBlank(message = ValidationMessages.EMAIL_REQUIRED)
     @Email(message = ValidationMessages.EMAIL_INVALID)
-    private String contactEmail;;
+    private String contactEmail;
 }
