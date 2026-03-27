@@ -3,6 +3,7 @@ package com.briangabini.coffee_erp_backend.web.controllers;
 import com.briangabini.coffee_erp_backend.exceptions.ResourceNotFoundException;
 import com.briangabini.coffee_erp_backend.services.CoffeeBeanService;
 import com.briangabini.coffee_erp_backend.web.dto.CoffeeBeanDto;
+import com.briangabini.coffee_erp_backend.web.dto.ValidationMessages;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -130,13 +131,14 @@ public class CoffeeBeanControllerTest {
     class CreateBeanValidationEndpoints {
 
         @Test
-        @DisplayName("Should return 400 Bad Request when bean name is blank")
-        void createBean_NameIsBlank() throws Exception {
-            // given valid data EXCEPT for name
+        @DisplayName("Should return 400 Bad Request for all other invalid fields")
+        void createBean_OtherFieldsInvalid() throws Exception {
+
+            // given
             CoffeeBeanDto invalidDto = CoffeeBeanDto.builder()
-                    .name("")
-                    .origin(VALID_ORIGIN)
-                    .roastLevel(VALID_ROAST_LEVEL)
+                    .name("")                                           // Fails @NotBlank
+                    .origin(" ")                                        // Fails @NotBlank
+                    .roastLevel(null)                                   // Fails @NotNull
                     .pricePerKg(DEFAULT_PRICE)
                     .build();
 
@@ -147,49 +149,9 @@ public class CoffeeBeanControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(inputJson))
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.name").value("Bean name is required"));
-        }
-
-        @Test
-        @DisplayName("Should return 400 Bad Request when origin is blank")
-        void createBean_OriginIsBlank() throws Exception {
-            // given valid data EXCEPT for origin
-            CoffeeBeanDto invalidDto = CoffeeBeanDto.builder()
-                    .name(VALID_BEAN_NAME)
-                    .origin("")
-                    .roastLevel(VALID_ROAST_LEVEL)
-                    .pricePerKg(DEFAULT_PRICE)
-                    .build();
-
-            String inputJson = objectmapper.writeValueAsString(invalidDto);
-
-            // when / then
-            mockMvc.perform(post(API_URL)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(inputJson))
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.origin").value("Origin is required"));
-        }
-
-        @Test
-        @DisplayName("Should return 400 Bad Request when roast level is null")
-        void createBean_RoastLevelIsNull() throws Exception {
-            // given valid data EXCEPT for roast level
-            CoffeeBeanDto invalidDto = CoffeeBeanDto.builder()
-                    .name(VALID_BEAN_NAME)
-                    .origin(VALID_ORIGIN)
-                    .roastLevel(null)
-                    .pricePerKg(DEFAULT_PRICE)
-                    .build();
-
-            String inputJson = objectmapper.writeValueAsString(invalidDto);
-
-            // when / then
-            mockMvc.perform(post(API_URL)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(inputJson))
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.roastLevel").value("Roast level is required"));
+                    .andExpect(jsonPath("$.name").value(ValidationMessages.BEAN_NAME_REQUIRED))
+                    .andExpect(jsonPath("$.origin").value(ValidationMessages.ORIGIN_REQUIRED))
+                    .andExpect(jsonPath("$.roastLevel").value(ValidationMessages.ROAST_LEVEL_REQUIRED));
         }
 
         @Test
@@ -210,7 +172,7 @@ public class CoffeeBeanControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(inputJson))
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.pricePerKg").value("Price per kg is required"));
+                    .andExpect(jsonPath("$.pricePerKg").value(ValidationMessages.PRICE_REQUIRED));
         }
 
         @Test
@@ -231,8 +193,7 @@ public class CoffeeBeanControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(inputJson))
                     .andExpect(status().isBadRequest())
-                    // This expects the default Hibernate Validator message for @Min
-                    .andExpect(jsonPath("$.pricePerKg").value("must be greater than or equal to 0"));
+                    .andExpect(jsonPath("$.pricePerKg").value(ValidationMessages.PRICE_NEGATIVE));
         }
     }
 }
