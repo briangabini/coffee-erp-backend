@@ -1,11 +1,10 @@
 package com.briangabini.coffee_erp_backend.controllers;
 
-import com.briangabini.coffee_erp_backend.domain.CoffeeBean;
 import com.briangabini.coffee_erp_backend.services.CoffeeBeanService;
 import com.briangabini.coffee_erp_backend.web.dto.CoffeeBeanDto;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
