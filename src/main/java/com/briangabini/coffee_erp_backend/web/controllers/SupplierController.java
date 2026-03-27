@@ -2,6 +2,7 @@ package com.briangabini.coffee_erp_backend.web.controllers;
 
 import com.briangabini.coffee_erp_backend.services.SupplierService;
 import com.briangabini.coffee_erp_backend.web.dto.SupplierDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class SupplierController {
     }
 
     @PostMapping
-    public ResponseEntity<SupplierDto> createSupplier(@RequestBody SupplierDto supplierDto) {
+    public ResponseEntity<SupplierDto> createSupplier(@Valid @RequestBody SupplierDto supplierDto) {
         log.info("REST request to create new supplier: {}", supplierDto.getName());
 
         SupplierDto savedSupplier = supplierService.createSupplier(supplierDto);

@@ -17,6 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static com.briangabini.coffee_erp_backend.fixtures.TestFixtures.*;
+import static com.briangabini.coffee_erp_backend.web.dto.ValidationMessages.EMAIL_INVALID;
+import static com.briangabini.coffee_erp_backend.web.dto.ValidationMessages.SUPPLIER_NAME_REQUIRED;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -120,6 +122,62 @@ class SupplierControllerTest {
                             .content(inputJson))
                     .andExpect(status().isCreated())
                     .andExpect(header().string("Location", "http://localhost" + API_URL + "/" + VALID_SUPPLIER_ID));
+        }
+    }
+
+    @Nested
+    @DisplayName("POST /api/v1/suppliers - Validation")
+    class CreateSupplierValidationEndpoints {
+
+        @Test
+        @DisplayName("Should return 400 Bad Request when supplier name is blank")
+        void createSupplier_NameIsBlank() throws Exception {
+
+            // given valid data EXCEPT for name
+            SupplierDto invalidDto = buildSupplierDto(null, "", VALID_SUPPLIER_EMAIL);
+
+            String inputJson = objectMapper.writeValueAsString(invalidDto);
+
+            // when / then
+            mockMvc.perform(post(API_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(inputJson))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.name").value(SUPPLIER_NAME_REQUIRED));
+        }
+
+        @Test
+        @DisplayName("Should return 400 Bad Request when email is blank (@NotBlank)")
+        void createSupplier_EmailIsBlank() throws Exception {
+
+            // given valid data EXCEPT for a blank email
+            SupplierDto invalidDto = buildSupplierDto(null, VALID_SUPPLIER_NAME, "");
+
+            String inputJson = objectMapper.writeValueAsString(invalidDto);
+
+            // when / then
+            mockMvc.perform(post(API_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(inputJson))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.contactEmail").exists());
+        }
+
+        @Test
+        @DisplayName("Should return 400 Bad Request when email is formatted incorrectly (@Email)")
+        void createSupplier_EmailIsInvalid() throws Exception {
+
+            // given valid data EXCEPT for a malformed email
+            SupplierDto invalidDto = buildSupplierDto(null, VALID_SUPPLIER_NAME, "not-an-email-address");
+
+            String inputJson = objectMapper.writeValueAsString(invalidDto);
+
+            // when / then
+            mockMvc.perform(post(API_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(inputJson))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.contactEmail").value(EMAIL_INVALID));
         }
     }
 }
