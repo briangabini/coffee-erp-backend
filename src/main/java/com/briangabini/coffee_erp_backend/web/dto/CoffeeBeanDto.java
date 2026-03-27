@@ -24,16 +24,16 @@ public class CoffeeBeanDto {
     private OffsetDateTime createdDate;
     private OffsetDateTime lastModifiedDate;
 
-    @NotBlank
+    @NotBlank(message = "Bean name is required")
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "Origin is required")
     String origin;
 
-    @NotNull
+    @NotNull(message = "Roast level is required")
     private RoastLevel roastLevel;
 
-    @NotNull
+    @NotNull(message = "Price per kg is required")
     @Min(0)
     private BigDecimal pricePerKg;
 }
