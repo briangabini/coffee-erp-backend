@@ -27,7 +27,8 @@ public class CoffeeBeanDto {
     @NotBlank
     private String name;
 
-    @NotBlank String origin;
+    @NotBlank
+    String origin;
 
     @NotNull
     private RoastLevel roastLevel;
