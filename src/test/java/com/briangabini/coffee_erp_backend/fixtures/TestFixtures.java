@@ -3,6 +3,7 @@ package com.briangabini.coffee_erp_backend.fixtures;
 import com.briangabini.coffee_erp_backend.domain.CoffeeBean;
 import com.briangabini.coffee_erp_backend.domain.InventoryStock;
 import com.briangabini.coffee_erp_backend.domain.Supplier;
+import com.briangabini.coffee_erp_backend.domain.enums.RoastLevel;
 import com.briangabini.coffee_erp_backend.web.dto.CoffeeBeanDto;
 import com.briangabini.coffee_erp_backend.web.dto.InventoryStockDto;
 import com.briangabini.coffee_erp_backend.web.dto.SupplierDto;
@@ -25,6 +26,8 @@ public final class TestFixtures {
     public static final String NEW_BEAN_NAME = "New Bean";
     public static final String BEAN_1_NAME = "Ethiopian Yirgacheffe";
     public static final String BEAN_2_NAME = "Colombian Supremo";
+    public static final String VALID_ORIGIN = "Colombia";
+    public static final RoastLevel VALID_ROAST_LEVEL = RoastLevel.MEDIUM;
 
     public static final String VALID_SUPPLIER_NAME = "Global Bean Importers";
     public static final String VALID_SUPPLIER_EMAIL = "hello@globalbeans.com";
@@ -41,6 +44,8 @@ public final class TestFixtures {
                 .id(id)
                 .name(name)
                 .pricePerKg(DEFAULT_PRICE)
+                .roastLevel(VALID_ROAST_LEVEL)
+                .pricePerKg(DEFAULT_PRICE)
                 .build();
     }
 
@@ -48,6 +53,8 @@ public final class TestFixtures {
         return CoffeeBeanDto.builder()
                 .id(id)
                 .name(name)
+                .origin(VALID_ORIGIN)
+                .roastLevel(VALID_ROAST_LEVEL)
                 .pricePerKg(DEFAULT_PRICE)
                 .build();
     }
