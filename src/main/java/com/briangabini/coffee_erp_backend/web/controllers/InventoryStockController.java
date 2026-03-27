@@ -2,6 +2,7 @@ package com.briangabini.coffee_erp_backend.web.controllers;
 
 import com.briangabini.coffee_erp_backend.services.InventoryStockService;
 import com.briangabini.coffee_erp_backend.web.dto.InventoryStockDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class InventoryStockController {
     }
 
     @PostMapping
-    public ResponseEntity<InventoryStockDto> addStock(@RequestBody InventoryStockDto inventoryStockDto) {
+    public ResponseEntity<InventoryStockDto> addStock(@Valid @RequestBody InventoryStockDto inventoryStockDto) {
         log.info("REST request to add stock for coffee bean id: {}", inventoryStockDto.getCoffeeBeanId());
 
         InventoryStockDto savedStock = inventoryStockService.addStock(inventoryStockDto);
