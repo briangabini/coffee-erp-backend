@@ -3,6 +3,7 @@ package com.briangabini.coffee_erp_backend.domain.security;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,13 +21,15 @@ public class Role {
 
     private String name;
 
+    @Builder.Default
     @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
+    private Set<User> users = new HashSet<>();
 
     @Singular
+    @Builder.Default
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "role_authority",
             joinColumns = {@JoinColumn(name = "role_id")},
             inverseJoinColumns = {@JoinColumn(name = "authority_id")})
-    private Set<Authority> authorities;
+    private Set<Authority> authorities = new HashSet<>();
 }
