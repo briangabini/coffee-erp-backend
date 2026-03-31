@@ -26,7 +26,6 @@ public class Role {
     private Set<User> users = new HashSet<>();
 
     @Singular
-    @Builder.Default
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "role_authority",
             joinColumns = {@JoinColumn(name = "role_id")},

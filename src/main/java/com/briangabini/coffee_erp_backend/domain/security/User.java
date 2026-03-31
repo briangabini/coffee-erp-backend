@@ -29,7 +29,6 @@ public class User {
     private String password;
 
     @Singular
-    @Builder.Default
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = {@JoinColumn(name = "user_id")},
