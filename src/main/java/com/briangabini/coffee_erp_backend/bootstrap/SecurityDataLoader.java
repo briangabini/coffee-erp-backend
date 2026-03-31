@@ -29,12 +29,6 @@ public class SecurityDataLoader implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // Temp
-    @Bean
-    public static PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     @Transactional
     @Override
     public void run(String... args) throws Exception {
