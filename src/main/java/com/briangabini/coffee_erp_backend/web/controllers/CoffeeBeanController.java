@@ -1,5 +1,7 @@
 package com.briangabini.coffee_erp_backend.web.controllers;
 
+import com.briangabini.coffee_erp_backend.security.permissions.CoffeeBeanCreatePermission;
+import com.briangabini.coffee_erp_backend.security.permissions.CoffeeBeanReadPermission;
 import com.briangabini.coffee_erp_backend.services.CoffeeBeanService;
 import com.briangabini.coffee_erp_backend.web.dto.CoffeeBeanDto;
 import jakarta.validation.Valid;
@@ -23,18 +25,21 @@ public class CoffeeBeanController {
     private final CoffeeBeanService coffeeBeanService;
 
     @GetMapping
+    @CoffeeBeanReadPermission
     public ResponseEntity<List<CoffeeBeanDto>> getAllBeans() {
         log.info("REST request to get all coffee beans");
         return ResponseEntity.ok(coffeeBeanService.getAllBeans());
     }
 
     @GetMapping("/{id}")
+    @CoffeeBeanReadPermission
     public ResponseEntity<CoffeeBeanDto> getBeanById(@PathVariable UUID id) {
         log.info("REST request to get coffee bean by id: {}", id);
         return ResponseEntity.ok(coffeeBeanService.getBeanById(id));
     }
 
     @PostMapping
+    @CoffeeBeanCreatePermission
     public ResponseEntity<CoffeeBeanDto> createBean(@Valid @RequestBody CoffeeBeanDto coffeeBeanDto) {
         log.info("REST request to create new coffee bean: {}", coffeeBeanDto.getName());
 

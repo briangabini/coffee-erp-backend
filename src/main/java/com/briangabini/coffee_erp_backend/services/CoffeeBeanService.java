@@ -3,6 +3,8 @@ package com.briangabini.coffee_erp_backend.services;
 import com.briangabini.coffee_erp_backend.domain.CoffeeBean;
 import com.briangabini.coffee_erp_backend.exceptions.ResourceNotFoundException;
 import com.briangabini.coffee_erp_backend.repositories.CoffeeBeanRepository;
+import com.briangabini.coffee_erp_backend.security.permissions.CoffeeBeanCreatePermission;
+import com.briangabini.coffee_erp_backend.security.permissions.CoffeeBeanReadPermission;
 import com.briangabini.coffee_erp_backend.web.dto.CoffeeBeanDto;
 import com.briangabini.coffee_erp_backend.web.mappers.CoffeeBeanMapper;
 import jakarta.transaction.Transactional;
@@ -22,6 +24,7 @@ public class CoffeeBeanService {
     private final CoffeeBeanRepository coffeeBeanRepository;
     private final CoffeeBeanMapper coffeeBeanMapper;
 
+    @CoffeeBeanReadPermission
     public List<CoffeeBeanDto> getAllBeans() {
         log.info("Fetching all coffee beans");
         return coffeeBeanRepository.findAll()
@@ -30,6 +33,7 @@ public class CoffeeBeanService {
                 .collect(Collectors.toList());
     }
 
+    @CoffeeBeanReadPermission
     public CoffeeBeanDto getBeanById(UUID id) {
         log.info("Fetching coffee bean by id");
         return coffeeBeanRepository.findById(id)
@@ -37,6 +41,7 @@ public class CoffeeBeanService {
                 .orElseThrow(() -> new ResourceNotFoundException("Coffee Bean not found with id: " + id));
     }
 
+    @CoffeeBeanCreatePermission
     @Transactional
     public CoffeeBeanDto createBean(CoffeeBeanDto coffeeBeanDto) {
         log.info("Creating new coffee bean: {}", coffeeBeanDto.getName());
