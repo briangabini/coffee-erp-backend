@@ -30,10 +30,6 @@ public class CoffeeBeanController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CoffeeBeanDto> getBeanById(@PathVariable UUID id) {
-        return getCoffeeBeanDtoResponseEntity(id);
-    }
-
-    private @NotNull ResponseEntity<CoffeeBeanDto> getCoffeeBeanDtoResponseEntity(UUID id) {
         log.info("REST request to get coffee bean by id: {}", id);
         return ResponseEntity.ok(coffeeBeanService.getBeanById(id));
     }
