@@ -1,5 +1,7 @@
 package com.briangabini.coffee_erp_backend.web.controllers;
 
+import com.briangabini.coffee_erp_backend.security.permissions.InventoryStockCreatePermission;
+import com.briangabini.coffee_erp_backend.security.permissions.InventoryStockReadPermission;
 import com.briangabini.coffee_erp_backend.services.InventoryStockService;
 import com.briangabini.coffee_erp_backend.web.dto.InventoryStockDto;
 import jakarta.validation.Valid;
@@ -21,18 +23,19 @@ public class InventoryStockController {
     private final InventoryStockService inventoryStockService;
 
     @GetMapping
+    @InventoryStockReadPermission
     public ResponseEntity<List<InventoryStockDto>> getAllStock() {
         log.info("REST request to get all inventory stock");
         return ResponseEntity.ok(inventoryStockService.getAllStock());
     }
 
     @PostMapping
+    @InventoryStockCreatePermission
     public ResponseEntity<InventoryStockDto> addStock(@Valid @RequestBody InventoryStockDto inventoryStockDto) {
         log.info("REST request to add stock for coffee bean id: {}", inventoryStockDto.getCoffeeBeanId());
 
         InventoryStockDto savedStock = inventoryStockService.addStock(inventoryStockDto);
 
-        // Best Practice: Return 201 Created with the Location header
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
