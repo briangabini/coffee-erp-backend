@@ -29,10 +29,10 @@ public class GlobalExceptionHandlerTest {
         assertAll(
                 () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND),
                 () -> assertThat(response.getBody()).isNotNull(),
-                () -> assertThat(response.getBody().status()).isEqualTo(404),
-                () -> assertThat(response.getBody().error()).isEqualTo("Not Found"),
-                () -> assertThat(response.getBody().message()).isEqualTo(errorMessage),
-                () -> assertThat(response.getBody().timestamp()).isNotNull()
+                () -> assertThat(response.getBody().getStatus()).isEqualTo(404),
+                () -> assertThat(response.getBody().getError()).isEqualTo("Not Found"),
+                () -> assertThat(response.getBody().getMessage()).isEqualTo(errorMessage),
+                () -> assertThat(response.getBody().getTimestamp()).isNotNull()
         );
     }
 }

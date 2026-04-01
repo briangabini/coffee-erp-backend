@@ -1,5 +1,6 @@
 package com.briangabini.coffee_erp_backend.web.controllers;
 
+import com.briangabini.coffee_erp_backend.security.JwtAuthenticationFilter;
 import com.briangabini.coffee_erp_backend.services.InventoryStockService;
 import com.briangabini.coffee_erp_backend.web.dto.InventoryStockDto;
 import com.briangabini.coffee_erp_backend.web.dto.ValidationMessages;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,7 +30,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(
         controllers = InventoryStockController.class,
-        excludeAutoConfiguration = {SecurityAutoConfiguration.class}
+        excludeAutoConfiguration = {SecurityAutoConfiguration.class},
+        excludeFilters = @ComponentScan.Filter(
+                type = FilterType.ASSIGNABLE_TYPE,
+                classes = JwtAuthenticationFilter.class
+        )
 )
 @DisplayName("Inventory Stock Controller Web Tests")
 class InventoryStockControllerTest {
@@ -108,7 +115,7 @@ class InventoryStockControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(inputJson))
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.coffeeBeanId").value(COFFEE_BEAN_ID_REQUIRED));
+                    .andExpect(jsonPath("$.validationErrors.coffeeBeanId").value(COFFEE_BEAN_ID_REQUIRED));
         }
 
         @Test
@@ -125,7 +132,7 @@ class InventoryStockControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(inputJson))
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.quantityGrams").value(QUANTITY_REQUIRED));
+                    .andExpect(jsonPath("$.validationErrors.quantityGrams").value(QUANTITY_REQUIRED));
         }
 
         @Test
@@ -142,7 +149,7 @@ class InventoryStockControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(inputJson))
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.quantityGrams").value(ValidationMessages.MUST_BE_GREATER_THAN_OR_EQUAL_TO_0));
+                    .andExpect(jsonPath("$.validationErrors.quantityGrams").value(ValidationMessages.MUST_BE_GREATER_THAN_OR_EQUAL_TO_0));
         }
     }
 }

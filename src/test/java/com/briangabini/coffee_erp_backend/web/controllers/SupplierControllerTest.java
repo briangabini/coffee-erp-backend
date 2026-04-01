@@ -1,6 +1,7 @@
 package com.briangabini.coffee_erp_backend.web.controllers;
 
 import com.briangabini.coffee_erp_backend.exceptions.ResourceNotFoundException;
+import com.briangabini.coffee_erp_backend.security.JwtAuthenticationFilter;
 import com.briangabini.coffee_erp_backend.services.SupplierService;
 import com.briangabini.coffee_erp_backend.web.dto.SupplierDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,7 +30,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(
         controllers = SupplierController.class,
-        excludeAutoConfiguration = {SecurityAutoConfiguration.class}
+        excludeAutoConfiguration = {SecurityAutoConfiguration.class},
+        excludeFilters = @ComponentScan.Filter(
+                type = FilterType.ASSIGNABLE_TYPE,
+                classes = JwtAuthenticationFilter.class
+        )
 )
 @DisplayName("Supplier Controller Web Tests")
 class SupplierControllerTest {
@@ -143,7 +150,7 @@ class SupplierControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(inputJson))
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.name").value(SUPPLIER_NAME_REQUIRED));
+                    .andExpect(jsonPath("$.validationErrors.name").value(SUPPLIER_NAME_REQUIRED));
         }
 
         @Test
@@ -160,7 +167,7 @@ class SupplierControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(inputJson))
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.contactEmail").exists());
+                    .andExpect(jsonPath("$.validationErrors.contactEmail").exists());
         }
 
         @Test
@@ -177,7 +184,7 @@ class SupplierControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(inputJson))
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.contactEmail").value(EMAIL_INVALID));
+                    .andExpect(jsonPath("$.validationErrors.contactEmail").value(EMAIL_INVALID));
         }
     }
 }
