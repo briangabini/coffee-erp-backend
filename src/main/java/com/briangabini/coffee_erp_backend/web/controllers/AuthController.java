@@ -28,7 +28,7 @@ public class AuthController {
     public ResponseEntity<JwtResponse> authenticate(@Valid @RequestBody LoginRequest request) {
         log.debug("Authentication request received for user: {}", request.getUsername());
 
-        var authentication = authenticationManager.authenticate(
+        var authentication = authenticationManager.authenticate(                                        // Step 2 https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/basic.html
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
                         request.getPassword()
