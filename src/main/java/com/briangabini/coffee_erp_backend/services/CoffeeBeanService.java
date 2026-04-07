@@ -3,8 +3,6 @@ package com.briangabini.coffee_erp_backend.services;
 import com.briangabini.coffee_erp_backend.domain.CoffeeBean;
 import com.briangabini.coffee_erp_backend.exceptions.ResourceNotFoundException;
 import com.briangabini.coffee_erp_backend.repositories.CoffeeBeanRepository;
-import com.briangabini.coffee_erp_backend.security.permissions.CoffeeBeanCreatePermission;
-import com.briangabini.coffee_erp_backend.security.permissions.CoffeeBeanReadPermission;
 import com.briangabini.coffee_erp_backend.web.dto.CoffeeBeanDto;
 import com.briangabini.coffee_erp_backend.web.mappers.CoffeeBeanMapper;
 import jakarta.transaction.Transactional;
