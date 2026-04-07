@@ -43,7 +43,7 @@ public class InventoryStockControllerSecurityTest {
     @MockitoBean
     UserDetailsService userDetailsService;
 
-    private final String API_URL = "/api/v1/inventory-stocks";
+    private final String API_URL = "/api/v1/inventory";
 
     @Nested
     @DisplayName("GET " + API_URL)
