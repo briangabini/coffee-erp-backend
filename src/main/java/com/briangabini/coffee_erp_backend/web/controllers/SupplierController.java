@@ -1,5 +1,7 @@
 package com.briangabini.coffee_erp_backend.web.controllers;
 
+import com.briangabini.coffee_erp_backend.security.permissions.SupplierCreatePermission;
+import com.briangabini.coffee_erp_backend.security.permissions.SupplierReadPermission;
 import com.briangabini.coffee_erp_backend.services.SupplierService;
 import com.briangabini.coffee_erp_backend.web.dto.SupplierDto;
 import jakarta.validation.Valid;
@@ -21,18 +23,21 @@ public class SupplierController {
 
     private final SupplierService supplierService;
 
+    @SupplierReadPermission
     @GetMapping
     public ResponseEntity<List<SupplierDto>> getAllSuppliers() {
         log.info("REST request to get all suppliers");
         return ResponseEntity.ok(supplierService.getAllSuppliers());
     }
 
+    @SupplierReadPermission
     @GetMapping("/{id}")
     public ResponseEntity<SupplierDto> getSupplierById(@PathVariable UUID id) {
         log.info("REST request to get supplier by id: {}", id);
         return ResponseEntity.ok(supplierService.getSupplierById(id));
     }
 
+    @SupplierCreatePermission
     @PostMapping
     public ResponseEntity<SupplierDto> createSupplier(@Valid @RequestBody SupplierDto supplierDto) {
         log.info("REST request to create new supplier: {}", supplierDto.getName());

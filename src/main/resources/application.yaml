@@ -18,3 +18,9 @@ spring:
 
   flyway:
     enabled: true
+
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET_KEY}
+      expiration: 86400000            # 1 day in milliseconds
